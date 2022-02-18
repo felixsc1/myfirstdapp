@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { useMoralis } from "react-moralis"
+import { Button, Container, Heading } from "@chakra-ui/react"
+import ERC20Balances from "./FetchBalances"
+import ApproveButton from "./Approve"
 
-function App() {
+export default function App() {
+  const {authenticate, isAuthenticated, isAuthenticating, user, logout} = useMoralis()
+
+
+
+  if (!isAuthenticated) {
+    return (
+      <Container>
+        <Heading>Welcome to this test dApp</Heading>
+        <Button isLoading={isAuthenticating} onClick={() => authenticate({signingMessage: "Welcome"})}>Connect Wallet</Button>
+      </Container>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Heading>Welcome {user.get("username")}</Heading>
+      <Button onClick={() => logout()}>Logout</Button>
+      <ApproveButton />
+      <ERC20Balances />
+    </Container>
   );
-}
 
-export default App;
+}
